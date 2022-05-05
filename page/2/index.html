@@ -229,170 +229,110 @@ window.CONFIG = CONFIG;</script><meta name="generator" content="Hexo 5.4.2"></he
 <p><img src="/2022/04/26/Django-%E8%B0%83%E7%94%A8%E6%8A%A5%E9%94%99-ImportError-Couldn-not-import-Django/004.png" alt="img"></p>
 <p>事后查阅了很多的资料以及其他人的分享。关于貌似是因为mysql数据库的版本问题导致。在Python3.6以上的版本会出现这种问题，大概吧。关于这个现象我只找到了一位和我有相同经历的博文。他的解决方法也是一样去掉了逗号，</p>
 <p>总结：这是一个神奇的逗号。</p>
-</div></div></article><article class="postlist-item post"><header class="post-header"><h1 class="post-title"><a class="post-title__link" href="/2018/06/12/js-%E7%BB%A7%E6%89%BF/">js 继承</a></h1><div class="post-meta"><span class="post-meta-item post-meta-item--createtime"><span class="post-meta-item__icon"><i class="far fa-calendar-plus"></i></span><span class="post-meta-item__info">发表于</span><span class="post-meta-item__value">2018-06-12</span></span></div></header><div class="post-body"><div class="post-excerpt"><p>JS继承的实现方式</p>
+</div></div></article><article class="postlist-item post"><header class="post-header"><h1 class="post-title"><a class="post-title__link" href="/2021/04/28/Vue3-%E5%93%8D%E5%BA%94%E5%BC%8F%E5%8E%9F%E7%90%86/">Vue3 响应式原理</a></h1><div class="post-meta"><span class="post-meta-item post-meta-item--createtime"><span class="post-meta-item__icon"><i class="far fa-calendar-plus"></i></span><span class="post-meta-item__info">发表于</span><span class="post-meta-item__value">2021-04-28</span></span></div></header><div class="post-body"><div class="post-excerpt">
+        <h2 id="什么是-Proxy">
+          <a href="#什么是-Proxy" class="heading-link"><i class="fas fa-link"></i></a><a href="#什么是-Proxy" class="headerlink" title="什么是 Proxy?"></a>什么是 Proxy?</h2>
+      <p><code>ES6</code> 中我们看到了一个让人耳目一新的属性——<code>Proxy</code>。我们先看一下概念：</p>
+<blockquote>
+<p>“</p>
+<p>通过调用 <code>new Proxy()</code> ，你可以创建一个代理用来替代另一个对象(被称为目标)，这个代理对目标对象进行了虚拟，因此该代理与该目标对象表面上可以被当作同一个对象来对待。代理允许你拦截在目标对象上的底层操作，而这原本是 <code>JS</code> 引擎的内部能力。</p>
+</blockquote>
+<p><code>Proxy</code> 顾名思义，就是代理的意思，这是一个能让我们随意操控对象的特性。当我们通过 <code>Proxy</code> 去对一个对象进行代理之后，我们将得到一个和被代理对象几乎完全一样的对象，并且可以对这个对象进行完全的监控。</p>
+<p>什么叫完全监控？<code>Proxy</code> 所带来的，是对底层操作的拦截。前面我们在实现对对象监听时使用了 <code>Object.defineProperty</code>，这个其实是 <code>JS</code> 提供给我们的高级操作，也就是通过底层封装之后暴露出来的方法。<code>Proxy</code> 的强大之处在于，我们可以直接拦截对代理对象的底层操作。这样我们相当于从一个对象的底层操作开始实现对它的监听。</p>
+<p>那么<code>Proxy</code>相比<code>Object.defineProperty</code>都有哪些优势呢？</p>
 
-        <h2 id="ES5">
-          <a href="#ES5" class="heading-link"><i class="fas fa-link"></i></a><a href="#ES5" class="headerlink" title="ES5"></a>ES5</h2>
-      <figure class="highlight javascript"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 定义一个动物类</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">Animal</span> (name) &#123;</span><br><span class="line">  <span class="comment">// 属性</span></span><br><span class="line">  <span class="variable language_">this</span>.<span class="property">name</span> = name || <span class="string">&#x27;Animal&#x27;</span>;</span><br><span class="line">  <span class="comment">// 实例方法</span></span><br><span class="line">  <span class="variable language_">this</span>.<span class="property">sleep</span> = <span class="keyword">function</span>(<span class="params"></span>)&#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="variable language_">this</span>.<span class="property">name</span> + <span class="string">&#x27;正在睡觉！&#x27;</span>);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 原型方法</span></span><br><span class="line"><span class="title class_">Animal</span>.<span class="property"><span class="keyword">prototype</span></span>.<span class="property">eat</span> = <span class="keyword">function</span>(<span class="params">food</span>) &#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="variable language_">this</span>.<span class="property">name</span> + <span class="string">&#x27;正在吃：&#x27;</span> + food);</span><br><span class="line">&#125;;</span><br><span class="line"></span><br></pre></td></tr></table></div></figure>
-
-
-        <h3 id="1、原型链继承">
-          <a href="#1、原型链继承" class="heading-link"><i class="fas fa-link"></i></a><a href="#1、原型链继承" class="headerlink" title="1、原型链继承"></a>1、原型链继承</h3>
-      <p><strong>核心：</strong> 将父类的实例作为子类的原型</p>
-<figure class="highlight javascript"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">Cat</span>(<span class="params"></span>)&#123; </span><br><span class="line">&#125;</span><br><span class="line"><span class="title class_">Cat</span>.<span class="property"><span class="keyword">prototype</span></span> = <span class="keyword">new</span> <span class="title class_">Animal</span>();</span><br><span class="line"><span class="title class_">Cat</span>.<span class="property"><span class="keyword">prototype</span></span>.<span class="property">name</span> = <span class="string">&#x27;cat&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">//　Test Code</span></span><br><span class="line"><span class="keyword">var</span> cat = <span class="keyword">new</span> <span class="title class_">Cat</span>();</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(cat.<span class="property">name</span>);</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(cat.<span class="title function_">eat</span>(<span class="string">&#x27;fish&#x27;</span>));</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(cat.<span class="title function_">sleep</span>());</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(cat <span class="keyword">instanceof</span> <span class="title class_">Animal</span>); <span class="comment">//true </span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(cat <span class="keyword">instanceof</span> <span class="title class_">Cat</span>); <span class="comment">//true</span></span><br></pre></td></tr></table></div></figure>
-
-<p>特点：</p>
-<ol>
-<li>非常纯粹的继承关系，实例是子类的实例，也是父类的实例</li>
-<li>父类新增原型方法/原型属性，子类都能访问到</li>
-<li>简单，易于实现</li>
-</ol>
-<p>缺点：</p>
-<ol>
-<li>要想为子类新增属性和方法，必须要在<code>new Animal()</code>这样的语句之后执行，不能放到构造器中</li>
-<li>无法实现多继承</li>
-<li>来自原型对象的所有属性被所有实例共享（来自原型对象的引用属性是所有实例共享的）（详细请看附录代码： 示例1）</li>
-<li>创建子类实例时，无法向父类构造函数传参</li>
-</ol>
-
-        <h3 id="2、构造继承">
-          <a href="#2、构造继承" class="heading-link"><i class="fas fa-link"></i></a><a href="#2、构造继承" class="headerlink" title="2、构造继承"></a>2、构造继承</h3>
-      <p><strong>核心：</strong>使用父类的构造函数来增强子类实例，等于是复制父类的实例属性给子类（没用到原型）</p>
-<figure class="highlight javascript"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">Cat</span>(<span class="params">name</span>)&#123;</span><br><span class="line">  <span class="title class_">Animal</span>.<span class="title function_">call</span>(<span class="variable language_">this</span>);</span><br><span class="line">  <span class="variable language_">this</span>.<span class="property">name</span> = name || <span class="string">&#x27;Tom&#x27;</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Test Code</span></span><br><span class="line"><span class="keyword">var</span> cat = <span class="keyword">new</span> <span class="title class_">Cat</span>();</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(cat.<span class="property">name</span>);</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(cat.<span class="title function_">sleep</span>());</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(cat <span class="keyword">instanceof</span> <span class="title class_">Animal</span>); <span class="comment">// false</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(cat <span class="keyword">instanceof</span> <span class="title class_">Cat</span>); <span class="comment">// true</span></span><br></pre></td></tr></table></div></figure>
-
-<p>特点：</p>
-<ol>
-<li>解决了1中，子类实例共享父类引用属性的问题</li>
-<li>创建子类实例时，可以向父类传递参数</li>
-<li>可以实现多继承（call多个父类对象）</li>
-</ol>
-<p>缺点：</p>
-<ol>
-<li>实例并不是父类的实例，只是子类的实例</li>
-<li>只能继承父类的实例属性和方法，不能继承原型属性/方法</li>
-<li>无法实现函数复用，每个子类都有父类实例函数的副本，影响性能</li>
-</ol>
-
-        <h3 id="3、组合继承">
-          <a href="#3、组合继承" class="heading-link"><i class="fas fa-link"></i></a><a href="#3、组合继承" class="headerlink" title="3、组合继承"></a>3、组合继承</h3>
-      <p><strong>核心：</strong>通过调用父类构造，继承父类的属性并保留传参的优点，然后通过将父类实例作为子类原型，实现函数复用</p>
-<figure class="highlight javascript"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">Cat</span>(<span class="params">name</span>)&#123;</span><br><span class="line">  <span class="title class_">Animal</span>.<span class="title function_">call</span>(<span class="variable language_">this</span>);</span><br><span class="line">  <span class="variable language_">this</span>.<span class="property">name</span> = name || <span class="string">&#x27;Tom&#x27;</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="title class_">Cat</span>.<span class="property"><span class="keyword">prototype</span></span> = <span class="keyword">new</span> <span class="title class_">Animal</span>();</span><br><span class="line"></span><br><span class="line"><span class="comment">// 感谢 @学无止境c 的提醒，组合继承也是需要修复构造函数指向的。</span></span><br><span class="line"></span><br><span class="line"><span class="title class_">Cat</span>.<span class="property"><span class="keyword">prototype</span></span>.<span class="property">constructor</span> = <span class="title class_">Cat</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Test Code</span></span><br><span class="line"><span class="keyword">var</span> cat = <span class="keyword">new</span> <span class="title class_">Cat</span>();</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(cat.<span class="property">name</span>);</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(cat.<span class="title function_">sleep</span>());</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(cat <span class="keyword">instanceof</span> <span class="title class_">Animal</span>); <span class="comment">// true</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(cat <span class="keyword">instanceof</span> <span class="title class_">Cat</span>); <span class="comment">// true</span></span><br></pre></td></tr></table></div></figure>
-
-<p>特点：</p>
-<ol>
-<li>弥补了方式2的缺陷，可以继承实例属性/方法，也可以继承原型属性/方法</li>
-<li>既是子类的实例，也是父类的实例</li>
-<li>不存在引用属性共享问题</li>
-<li>可传参</li>
-<li>函数可复用</li>
-</ol>
-<p>缺点：</p>
-<ol>
-<li>调用了两次父类构造函数，生成了两份实例（子类实例将子类原型上的那份屏蔽了）</li>
-</ol>
-
-        <h2 id="ES6">
-          <a href="#ES6" class="heading-link"><i class="fas fa-link"></i></a><a href="#ES6" class="headerlink" title="ES6"></a>ES6</h2>
-      
-        <h3 id="1-class-extends继承">
-          <a href="#1-class-extends继承" class="heading-link"><i class="fas fa-link"></i></a><a href="#1-class-extends继承" class="headerlink" title="1.class extends继承"></a>1.class extends继承</h3>
-      <p><strong>实现代码如下：</strong></p>
-<figure class="highlight javascript"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable language_">window</span>.<span class="property">onload</span> = <span class="keyword">function</span>(<span class="params"></span>)&#123;</span><br><span class="line">      <span class="comment">// es6中的继承,就是类和类之间的继承,通过extends和super()方法实现继承</span></span><br><span class="line">      <span class="comment">// Person类</span></span><br><span class="line">      <span class="keyword">class</span> <span class="title class_">Person</span> &#123;</span><br><span class="line">        <span class="title function_">sleep</span>(<span class="params"></span>)&#123;</span><br><span class="line">          <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;time to sleep&#x27;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="title function_">constructor</span>(<span class="params">name</span>)&#123;</span><br><span class="line">          <span class="variable language_">this</span>.<span class="property">name</span> = name</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="comment">// Stu类继承Person类</span></span><br><span class="line">      <span class="keyword">class</span> <span class="title class_">Stu</span> <span class="keyword">extends</span> <span class="title class_ inherited__">Person</span>&#123;</span><br><span class="line">        <span class="title function_">constructor</span>(<span class="params">score,name</span>)&#123;</span><br><span class="line">          <span class="variable language_">super</span>(name)</span><br><span class="line">          <span class="variable language_">this</span>.<span class="property">score</span> = score</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">let</span> stu1 = <span class="keyword">new</span> <span class="title class_">Stu</span>(<span class="number">99</span>,<span class="string">&#x27;kk&#x27;</span>)</span><br><span class="line">      <span class="variable language_">console</span>.<span class="title function_">log</span>(stu1); <span class="comment">// Stu &#123;name: &#x27;kk&#x27;, score: 99&#125;</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br></pre></td></tr></table></div></figure>
-
-</div></div></article><article class="postlist-item post"><header class="post-header"><h1 class="post-title"><a class="post-title__link" href="/2018/05/02/js%E7%9A%84%E6%B7%B1%E6%B5%85%E6%8B%B7%E8%B4%9D/">js的深浅拷贝</a></h1><div class="post-meta"><span class="post-meta-item post-meta-item--createtime"><span class="post-meta-item__icon"><i class="far fa-calendar-plus"></i></span><span class="post-meta-item__info">发表于</span><span class="post-meta-item__value">2018-05-02</span></span></div></header><div class="post-body"><div class="post-excerpt"><p>前言：<code>JavaScript</code>中存在两大数据类型：</p>
-<ul>
-<li>基本类型</li>
-<li>引用类型</li>
+        <h2 id="Proxy-的优势">
+          <a href="#Proxy-的优势" class="heading-link"><i class="fas fa-link"></i></a><a href="#Proxy-的优势" class="headerlink" title="Proxy 的优势"></a>Proxy 的优势</h2>
+      <ul>
+<li><code>Proxy</code> 可以直接监听对象而非属性；</li>
+<li><code>Proxy</code> 可以直接监听数组的变化；</li>
+<li><code>Proxy</code> 有多达 13 种拦截方法,不限于 <code>apply</code>、<code>ownKeys</code>、<code>deleteProperty</code>、<code>has</code> 等等是 <code>Object.defineProperty</code> 不具备的；</li>
+<li><code>Proxy</code> 返回的是一个新对象,我们可以只操作新的对象达到目的,而 <code>Object.defineProperty</code> 只能遍历对象属性直接修改；</li>
+<li><code>Proxy</code> 作为新标准将受到浏览器厂商重点持续的性能优化，也就是传说中的新标准的性能红利。</li>
 </ul>
-<p>基本类型数据保存在在栈内存中</p>
-<p>引用类型数据保存在堆内存中，引用数据类型的变量是一个指向堆内存中实际对象的引用，存在栈中</p>
+<p>对<code>Proxy</code>有了大致的了解后，下面我就来分析一下<code>Vue3</code>的响应式原理</p>
 
-        <h2 id="浅拷贝">
-          <a href="#浅拷贝" class="heading-link"><i class="fas fa-link"></i></a><a href="#浅拷贝" class="headerlink" title="浅拷贝"></a>浅拷贝</h2>
-      <p>浅拷贝，指的是创建新的数据，这个数据有着原始数据属性值的一份精确拷贝</p>
-<p>如果属性是基本类型，拷贝的就是基本类型的值。如果属性是引用类型，拷贝的就是内存地址</p>
-<p>即浅拷贝是拷贝一层，深层次的引用类型则共享内存地址</p>
-<p>下面简单实现一个浅拷贝</p>
-<figure class="highlight js"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">shallowClone</span>(<span class="params">obj</span>) &#123;</span><br><span class="line">    <span class="keyword">const</span> newObj = &#123;&#125;;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">let</span> prop <span class="keyword">in</span> obj) &#123;</span><br><span class="line">        <span class="keyword">if</span>(obj.<span class="title function_">hasOwnProperty</span>(prop))&#123;</span><br><span class="line">            newObj[prop] = obj[prop];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> newObj;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></div></figure>
-
-<p>在<code>JavaScript</code>中，存在浅拷贝的现象有：</p>
+        <h2 id="Vue3响应式原理">
+          <a href="#Vue3响应式原理" class="heading-link"><i class="fas fa-link"></i></a><a href="#Vue3响应式原理" class="headerlink" title="Vue3响应式原理"></a>Vue3响应式原理</h2>
+      <p>这里放一张我之前整理的关于<code>Vue3</code>响应式的流程图：</p>
+<p><img src="/2021/04/28/Vue3-%E5%93%8D%E5%BA%94%E5%BC%8F%E5%8E%9F%E7%90%86/001.jpg"></p>
+<p>我们来梳理一下流程：</p>
+<p>1、通过<code>state = reactive(target)</code>来定义响应式数据（这里基于<code>Proxy</code>实现）</p>
+<p>2、通过 <code>effect</code>声明依赖响应式数据的函数<code>cb</code> ( 例如视图渲染函数<code>render</code>函数)，并执行<code>cb</code>函数，执行过程中，会触发响应式数据 <code>getter</code></p>
+<p>3、在响应式数据 <code>getter</code>中进行 <code>track</code>依赖收集：存储响应式数据与更新函数 cb 的映射关系，存储于<code>targetMap</code></p>
+<p>4、当变更响应式数据时，触发<code>trigger</code>，根据<code>targetMap</code>找到关联的<code>cb</code>并执行</p>
+<blockquote>
+<figure class="highlight javascript"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">targetMap<span class="string">`的结构为：`</span>&#123;<span class="attr">target</span>: &#123;<span class="attr">key</span>: [fn1,fn2]&#125;&#125;</span><br></pre></td></tr></table></div></figure>
+</blockquote>
+</div></div></article><article class="postlist-item post"><header class="post-header"><h1 class="post-title"><a class="post-title__link" href="/2020/11/13/vue3%E5%B8%A6%E6%9D%A5%E7%9A%84%E6%96%B0%E7%89%B9%E6%80%A7-%E4%BA%AE%E7%82%B9/">vue3带来的新特性/亮点</a></h1><div class="post-meta"><span class="post-meta-item post-meta-item--createtime"><span class="post-meta-item__icon"><i class="far fa-calendar-plus"></i></span><span class="post-meta-item__info">发表于</span><span class="post-meta-item__value">2020-11-13</span></span></div></header><div class="post-body"><div class="post-excerpt"><p><strong>1. 压缩包体积更小</strong></p>
+<blockquote>
+<p>当前最小化并被压缩的 Vue 运行时大小约为 20kB（2.6.10 版为 22.8kB）。Vue 3.0捆绑包的大小大约会减少一半，即只有10kB！</p>
+</blockquote>
+<p><strong>2. Object.defineProperty -&gt; Proxy</strong></p>
 <ul>
-<li><code>Object.assign</code></li>
-<li><code>Array.prototype.slice()</code>, <code>Array.prototype.concat()</code></li>
-<li>使用拓展运算符实现的复制</li>
+<li><code>Object.defineProperty</code>是一个相对比较昂贵的操作，因为它直接操作对象的属性，颗粒度比较小。将它替换为es6的<code>Proxy</code>，在目标对象之上架了一层拦截，代理的是对象而不是对象的属性。这样可以将原本对对象属性的操作变为对整个对象的操作，颗粒度变大。</li>
+<li>javascript引擎在解析的时候希望对象的结构越稳定越好，如果对象一直在变，可优化性降低，proxy不需要对原始对象做太多操作。</li>
 </ul>
-
-        <h3 id="Object-assign">
-          <a href="#Object-assign" class="heading-link"><i class="fas fa-link"></i></a><a href="#Object-assign" class="headerlink" title="Object.assign"></a>Object.assign</h3>
-      <figure class="highlight js"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> obj = &#123;</span><br><span class="line">    <span class="attr">age</span>: <span class="number">18</span>,</span><br><span class="line">    <span class="attr">nature</span>: [<span class="string">&#x27;smart&#x27;</span>, <span class="string">&#x27;good&#x27;</span>],</span><br><span class="line">    <span class="attr">names</span>: &#123;</span><br><span class="line">        <span class="attr">name1</span>: <span class="string">&#x27;fx&#x27;</span>,</span><br><span class="line">        <span class="attr">name2</span>: <span class="string">&#x27;xka&#x27;</span></span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="attr">love</span>: <span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">        <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;fx is a great girl&#x27;</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">var</span> newObj = <span class="title class_">Object</span>.<span class="title function_">assign</span>(&#123;&#125;, fxObj);</span><br></pre></td></tr></table></div></figure>
-
-
-        <h3 id="slice">
-          <a href="#slice" class="heading-link"><i class="fas fa-link"></i></a><a href="#slice" class="headerlink" title="slice()"></a>slice()</h3>
-      <figure class="highlight js"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> fxArr = [<span class="string">&quot;One&quot;</span>, <span class="string">&quot;Two&quot;</span>, <span class="string">&quot;Three&quot;</span>]</span><br><span class="line"><span class="keyword">const</span> fxArrs = fxArr.<span class="title function_">slice</span>(<span class="number">0</span>)</span><br><span class="line">fxArrs[<span class="number">1</span>] = <span class="string">&quot;love&quot;</span>;</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(fxArr) <span class="comment">// [&quot;One&quot;, &quot;Two&quot;, &quot;Three&quot;]</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(fxArrs) <span class="comment">// [&quot;One&quot;, &quot;love&quot;, &quot;Three&quot;]</span></span><br></pre></td></tr></table></div></figure>
-
-
-        <h3 id="concat">
-          <a href="#concat" class="heading-link"><i class="fas fa-link"></i></a><a href="#concat" class="headerlink" title="concat()"></a>concat()</h3>
-      <figure class="highlight js"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> fxArr = [<span class="string">&quot;One&quot;</span>, <span class="string">&quot;Two&quot;</span>, <span class="string">&quot;Three&quot;</span>]</span><br><span class="line"><span class="keyword">const</span> fxArrs = fxArr.<span class="title function_">concat</span>()</span><br><span class="line">fxArrs[<span class="number">1</span>] = <span class="string">&quot;love&quot;</span>;</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(fxArr) <span class="comment">// [&quot;One&quot;, &quot;Two&quot;, &quot;Three&quot;]</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(fxArrs) <span class="comment">// [&quot;One&quot;, &quot;love&quot;, &quot;Three&quot;]</span></span><br></pre></td></tr></table></div></figure>
-
-
-        <h3 id="拓展运算符">
-          <a href="#拓展运算符" class="heading-link"><i class="fas fa-link"></i></a><a href="#拓展运算符" class="headerlink" title="拓展运算符"></a>拓展运算符</h3>
-      <figure class="highlight js"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> fxArr = [<span class="string">&quot;One&quot;</span>, <span class="string">&quot;Two&quot;</span>, <span class="string">&quot;Three&quot;</span>]</span><br><span class="line"><span class="keyword">const</span> fxArrs = [...fxArr]</span><br><span class="line">fxArrs[<span class="number">1</span>] = <span class="string">&quot;love&quot;</span>;</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(fxArr) <span class="comment">// [&quot;One&quot;, &quot;Two&quot;, &quot;Three&quot;]</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(fxArrs) <span class="comment">// [&quot;One&quot;, &quot;love&quot;, &quot;Three&quot;]</span></span><br></pre></td></tr></table></div></figure>
-
-
-        <h2 id="深拷贝">
-          <a href="#深拷贝" class="heading-link"><i class="fas fa-link"></i></a><a href="#深拷贝" class="headerlink" title="深拷贝"></a>深拷贝</h2>
-      <p>深拷贝开辟一个新的栈，两个对象属完成相同，但是对应两个不同的地址，修改一个对象的属性，不会改变另一个对象的属性</p>
-<p>常见的深拷贝方式有：</p>
+<p><strong>3. Virtual DOM 重构</strong></p>
+<blockquote>
+<p>vdom的本质是一个抽象层，用javascript描述界面渲染成什么样子。react用jsx，没办法检测出可以优化的动态代码，所以做时间分片，vue中足够快的话可以不用时间分片</p>
+</blockquote>
 <ul>
-<li>_.cloneDeep()</li>
-<li>jQuery.extend()</li>
-<li>JSON.stringify()</li>
-<li>手写循环递归</li>
+<li><strong>传统vdom的性能瓶颈：</strong><ul>
+<li>虽然 Vue 能够保证触发更新的组件最小化，但在单个组件内部依然需要遍历该组件的整个 vdom 树。</li>
+<li>传统 vdom 的性能跟模版大小正相关，跟动态节点的数量无关。在一些组件整个模版内只有少量动态节点的情况下，这些遍历都是性能的浪费。</li>
+<li>JSX 和手写的 render function 是完全动态的，过度的灵活性导致运行时可以用于优化的信息不足</li>
 </ul>
-
-        <h3 id="cloneDeep">
-          <a href="#cloneDeep" class="heading-link"><i class="fas fa-link"></i></a><a href="#cloneDeep" class="headerlink" title="_.cloneDeep()"></a>_.cloneDeep()</h3>
-      <figure class="highlight js"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> _ = <span class="built_in">require</span>(<span class="string">&#x27;lodash&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> obj1 = &#123;</span><br><span class="line">    <span class="attr">a</span>: <span class="number">1</span>,</span><br><span class="line">    <span class="attr">b</span>: &#123; <span class="attr">f</span>: &#123; <span class="attr">g</span>: <span class="number">1</span> &#125; &#125;,</span><br><span class="line">    <span class="attr">c</span>: [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]</span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">const</span> obj2 = _.<span class="title function_">cloneDeep</span>(obj1);</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(obj1.<span class="property">b</span>.<span class="property">f</span> === obj2.<span class="property">b</span>.<span class="property">f</span>);<span class="comment">// false</span></span><br></pre></td></tr></table></div></figure>
-
-
-        <h3 id="jQuery-extend">
-          <a href="#jQuery-extend" class="heading-link"><i class="fas fa-link"></i></a><a href="#jQuery-extend" class="headerlink" title="jQuery.extend()"></a>jQuery.extend()</h3>
-      <figure class="highlight js"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> $ = <span class="built_in">require</span>(<span class="string">&#x27;jquery&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> obj1 = &#123;</span><br><span class="line">    <span class="attr">a</span>: <span class="number">1</span>,</span><br><span class="line">    <span class="attr">b</span>: &#123; <span class="attr">f</span>: &#123; <span class="attr">g</span>: <span class="number">1</span> &#125; &#125;,</span><br><span class="line">    <span class="attr">c</span>: [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]</span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">const</span> obj2 = $.<span class="title function_">extend</span>(<span class="literal">true</span>, &#123;&#125;, obj1);</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(obj1.<span class="property">b</span>.<span class="property">f</span> === obj2.<span class="property">b</span>.<span class="property">f</span>); <span class="comment">// false</span></span><br></pre></td></tr></table></div></figure>
-
-
-        <h3 id="JSON-stringify">
-          <a href="#JSON-stringify" class="heading-link"><i class="fas fa-link"></i></a><a href="#JSON-stringify" class="headerlink" title="JSON.stringify()"></a>JSON.stringify()</h3>
-      <figure class="highlight js"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> obj2=<span class="title class_">JSON</span>.<span class="title function_">parse</span>(<span class="title class_">JSON</span>.<span class="title function_">stringify</span>(obj1));</span><br></pre></td></tr></table></div></figure>
-
-<p>但是这种方式存在弊端，会忽略<code>undefined</code>、<code>symbol</code>和<code>函数</code></p>
-<figure class="highlight js"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> obj = &#123;</span><br><span class="line">    <span class="attr">name</span>: <span class="string">&#x27;A&#x27;</span>,</span><br><span class="line">    <span class="attr">name1</span>: <span class="literal">undefined</span>,</span><br><span class="line">    <span class="attr">name3</span>: <span class="keyword">function</span>(<span class="params"></span>) &#123;&#125;,</span><br><span class="line">    <span class="attr">name4</span>:  <span class="title class_">Symbol</span>(<span class="string">&#x27;A&#x27;</span>)</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">const</span> obj2 = <span class="title class_">JSON</span>.<span class="title function_">parse</span>(<span class="title class_">JSON</span>.<span class="title function_">stringify</span>(obj));</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(obj2); <span class="comment">// &#123;name: &quot;A&quot;&#125;</span></span><br></pre></td></tr></table></div></figure>
-
-
-        <h3 id="循环递归">
-          <a href="#循环递归" class="heading-link"><i class="fas fa-link"></i></a><a href="#循环递归" class="headerlink" title="循环递归"></a>循环递归</h3>
-      <figure class="highlight js"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">deepClone</span>(<span class="params">obj, hash = <span class="keyword">new</span> <span class="built_in">WeakMap</span>()</span>) &#123;</span><br><span class="line">  <span class="keyword">if</span> (obj === <span class="literal">null</span>) <span class="keyword">return</span> obj; <span class="comment">// 如果是null或者undefined我就不进行拷贝操作</span></span><br><span class="line">  <span class="keyword">if</span> (obj <span class="keyword">instanceof</span> <span class="title class_">Date</span>) <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">Date</span>(obj);</span><br><span class="line">  <span class="keyword">if</span> (obj <span class="keyword">instanceof</span> <span class="title class_">RegExp</span>) <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">RegExp</span>(obj);</span><br><span class="line">  <span class="comment">// 可能是对象或者普通的值  如果是函数的话是不需要深拷贝</span></span><br><span class="line">  <span class="keyword">if</span> (<span class="keyword">typeof</span> obj !== <span class="string">&quot;object&quot;</span>) <span class="keyword">return</span> obj;</span><br><span class="line">  <span class="comment">// 是对象的话就要进行深拷贝</span></span><br><span class="line">  <span class="keyword">if</span> (hash.<span class="title function_">get</span>(obj)) <span class="keyword">return</span> hash.<span class="title function_">get</span>(obj);</span><br><span class="line">  <span class="keyword">let</span> cloneObj = <span class="keyword">new</span> obj.<span class="title function_">constructor</span>(<span class="params"></span>);</span><br><span class="line">  <span class="comment">// 找到的是所属类原型上的constructor,而原型上的 constructor指向的是当前类本身</span></span><br><span class="line">  hash.<span class="title function_">set</span>(obj, cloneObj);</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">let</span> key <span class="keyword">in</span> obj) &#123;</span><br><span class="line">    <span class="keyword">if</span> (obj.<span class="title function_">hasOwnProperty</span>(key)) &#123;</span><br><span class="line">      <span class="comment">// 实现一个递归拷贝</span></span><br><span class="line">      cloneObj[key] = <span class="title function_">deepClone</span>(obj[key], hash);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> cloneObj;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></div></figure>
-
-
-        <h2 id="小结">
-          <a href="#小结" class="heading-link"><i class="fas fa-link"></i></a><a href="#小结" class="headerlink" title="小结"></a>小结</h2>
-      <p>前提为拷贝类型为引用类型的情况下：</p>
+</li>
+<li><strong>那为什么不直接抛弃vdom呢？</strong><ul>
+<li>高级场景下手写 <code>render function</code> 获得更强的表达力</li>
+<li>生成的代码更简洁</li>
+<li>兼容2.x</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>vue的特点是底层为Virtual DOM，上层包含有大量静态信息的模版。为了兼容手写 render function，最大化利用模版静态信息，<code>vue3.0采用了动静结合的解决方案</code>，将vdom的操作颗粒度变小，每次触发更新不再以组件为单位进行遍历，主要更改如下</p>
+</blockquote>
 <ul>
-<li>浅拷贝是拷贝一层，属性为对象时，浅拷贝是复制，两个对象指向同一个地址</li>
-<li>深拷贝是递归拷贝深层次，属性为对象时，深拷贝是新开栈，两个对象指向不同的地址</li>
+<li>将模版基于动态节点指令切割为嵌套的区块</li>
+<li>每个区块内部的节点结构是固定的</li>
+<li>每个区块只需要以一个 <code>Array</code> 追踪自身包含的动态节点</li>
 </ul>
-</div></div></article><article class="postlist-item post"><header class="post-header"><h1 class="post-title"><a class="post-title__link" href="/2018/02/04/%E8%AF%B4%E8%AF%B4%E4%BD%A0%E5%AF%B9%E9%97%AD%E5%8C%85%E7%9A%84%E7%90%86%E8%A7%A3%EF%BC%9F%E9%97%AD%E5%8C%85%E7%9A%84%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF/">说说你对闭包的理解？闭包的使用场景</a></h1><div class="post-meta"><span class="post-meta-item post-meta-item--createtime"><span class="post-meta-item__icon"><i class="far fa-calendar-plus"></i></span><span class="post-meta-item__info">发表于</span><span class="post-meta-item__value">2018-02-04</span></span></div></header><div class="post-body"><div class="post-excerpt">
-        <h2 id="概念">
-          <a href="#概念" class="heading-link"><i class="fas fa-link"></i></a><a href="#概念" class="headerlink" title="概念"></a>概念</h2>
-      <p>闭包实际上就是函数中嵌套了一个函数并返回，内部函数读取了外部函数的变量，闭包中的变量不会被回收掉，保留在内存当中。</p>
-<p><strong>→ 特性：</strong></p>
-<p>       1. 函数嵌套函数<br>       2. 内部函数可以访问外部函数的变量<br>       3. 参数和变量不会被回收。</p>
-<p>但是需要注意的是不能滥用闭包，因为可能导致内存溢出，导致服务器宕机。</p>
-
-        <h2 id="使用场景">
-          <a href="#使用场景" class="heading-link"><i class="fas fa-link"></i></a><a href="#使用场景" class="headerlink" title="使用场景"></a>使用场景</h2>
-      <p>闭包的典型框架应该就是jquery了。</p>
-<p>例如防抖、节流等都可以用到闭包。</p>
-</div></div></article></section><nav class="paginator"><div class="paginator-inner"><a class="extend prev" rel="prev" href="/"><i class="fas fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/3/"><i class="fas fa-angle-right"></i></a></div></nav></div></div><div class="sidebar-wrap" id="sidebar-wrap"><aside class="sidebar" id="sidebar"><section class="sidebar-toc hide"></section><!-- ov = overview--><section class="sidebar-ov"><div class="sidebar-ov-author"><div class="sidebar-ov-author__avatar"><img class="sidebar-ov-author__avatar_img" src="/images/icons/stun-logo.svg" alt="avatar"></div><p class="sidebar-ov-author__text">hello world</p></div><div class="sidebar-ov-state"><a class="sidebar-ov-state-item sidebar-ov-state-item--posts" href="/archives/"><div class="sidebar-ov-state-item__count">25</div><div class="sidebar-ov-state-item__name">归档</div></a><a class="sidebar-ov-state-item sidebar-ov-state-item--categories" href="/categories/"><div class="sidebar-ov-state-item__count">7</div><div class="sidebar-ov-state-item__name">分类</div></a><a class="sidebar-ov-state-item sidebar-ov-state-item--tags" href="/tags/"><div class="sidebar-ov-state-item__count">7</div><div class="sidebar-ov-state-item__name">标签</div></a></div><div class="sidebar-ov-cc"><a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en" target="_blank" rel="noopener" data-popover="知识共享许可协议" data-popover-pos="up"><img src="/images/cc-by-nc-sa.svg"></a></div></section></aside></div><div class="clearfix"></div></div></main><footer class="footer" id="footer"><div class="footer-inner"><div><span>Copyright © 2022</span><span class="footer__icon"><i class="fas fa-heart"></i></span><span>牛赞</span></div><div><span>由 <a href="http://hexo.io/" title="Hexo" target="_blank" rel="noopener">Hexo</a> 强力驱动</span><span> v5.4.2</span><span class="footer__devider">|</span><span>主题 - <a href="https://github.com/liuyib/hexo-theme-stun/" title="Stun" target="_blank" rel="noopener">Stun</a></span><span> v2.6.2</span></div><div class="busuanzi"><span class="busuanzi-siteuv"><span class="busuanzi-siteuv__icon"><i class="fas fa-user"></i></span><span class="busuanzi-siteuv__info">访问人数</span><span class="busuanzi-siteuv__value" id="busuanzi_value_site_uv"></span></span><span class="busuanzi-sitepv"><span class="busuanzi-siteuv__icon"><i class="fas fa-eye"></i></span><span class="busuanzi-siteuv__info">浏览总量</span><span class="busuanzi-siteuv__value" id="busuanzi_value_site_pv"></span></span></div></div></footer><div class="loading-bar" id="loading-bar"><div class="loading-bar__progress"></div></div><div class="back2top" id="back2top"><span class="back2top__icon"><i class="fas fa-rocket"></i></span></div></div><script src="https://cdn.jsdelivr.net/npm/jquery@v3.4.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@1.5.2/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@1.5.2/velocity.ui.min.js"></script><script src="https://cdn.jsdelivr.net/gh/sukkaw/busuanzi@latest/bsz.pure.mini.js" async></script><script src="/js/utils.js?v=2.6.2"></script><script src="/js/stun-boot.js?v=2.6.2"></script><script src="/js/scroll.js?v=2.6.2"></script><script src="/js/header.js?v=2.6.2"></script><script src="/js/sidebar.js?v=2.6.2"></script></body></html>
+<blockquote>
+<p>vue3.0将 vdom 更新性能由与模版整体大小相关提升为与动态内容的数量相关</p>
+</blockquote>
+<p><strong>Vue 3.0 动静结合的 Dom diff</strong></p>
+<blockquote>
+<ul>
+<li>Vue3.0 提出动静结合的 DOM diff 思想，动静结合的 DOM diff其实是在预编译阶段进行了优化。之所以能够做到预编译优化，是因为 Vue core 可以静态分析 template，在解析模版时，整个 parse 的过程是利用正则表达式顺序解析模板，当解析到开始标签、闭合标签和文本的时候都会分别执行对应的回调函数，来达到构造 AST 树的目的。</li>
+<li>借助预编译过程，Vue 可以做到的预编译优化就很强大了。比如在预编译时标记出模版中可能变化的组件节点，再次进行渲染前 diff 时就可以跳过“永远不会变化的节点”，而只需要对比“可能会变化的动态节点”。这也就是动静结合的 DOM diff 将 diff 成本与模版大小正相关优化到与动态节点正相关的理论依据。</li>
+</ul>
+</blockquote>
+<p><strong>4. Performance</strong></p>
+<blockquote>
+<p>vue3在性能方面比vue2快了2倍。</p>
+</blockquote>
+<ul>
+<li>重写了虚拟DOM的实现</li>
+<li>运行时编译</li>
+<li>update性能提高</li>
+<li>SSR速度提高</li>
+</ul>
+<p><strong>5. Tree-shaking support</strong></p>
+<blockquote>
+<p>vue3中的核心api都支持了tree-shaking，这些api都是通过包引入的方式而不是直接在实例化时就注入，只会对使用到的功能或特性进行打包（按需打包），这意味着更多的功能和更小的体积。</p>
+</blockquote>
+</div></div></article><article class="postlist-item post"><header class="post-header"><h1 class="post-title"><a class="post-title__link" href="/2020/07/15/js%E4%BD%9C%E7%94%A8%E5%9F%9F%E7%9A%84%E7%90%86%E8%A7%A3/">js作用域的理解</a></h1><div class="post-meta"><span class="post-meta-item post-meta-item--createtime"><span class="post-meta-item__icon"><i class="far fa-calendar-plus"></i></span><span class="post-meta-item__info">发表于</span><span class="post-meta-item__value">2020-07-15</span></span></div></header><div class="post-body"><div class="post-excerpt"><p><strong>1. 全局作用域</strong></p>
+<blockquote>
+<p>全局变量是挂载在 window 对象下的变量，所以在网页中的任何位置你都可以使用并且访问到这个全局变量</p>
+</blockquote>
+<p><strong>2. 函数作用域</strong></p>
+<blockquote>
+<p>函数中定义的变量叫作函数变量，这个时候只能在函数内部才能访问到它，所以它的作用域也就是函数的内部，称为函数作用域</p>
+</blockquote>
+<p><strong>3. 块级作用域</strong></p>
+<blockquote>
+<p>ES6 中新增了块级作用域，最直接的表现就是新增的 let 关键词，使用 let 关键词定义的变量只能在块级作用域中被访问，有“暂时性死区”的特点，也就是说这个变量在定义之前是不能被使用的。</p>
+</blockquote>
+</div></div></article></section><nav class="paginator"><div class="paginator-inner"><a class="extend prev" rel="prev" href="/"><i class="fas fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/3/"><i class="fas fa-angle-right"></i></a></div></nav></div></div><div class="sidebar-wrap" id="sidebar-wrap"><aside class="sidebar" id="sidebar"><section class="sidebar-toc hide"></section><!-- ov = overview--><section class="sidebar-ov"><div class="sidebar-ov-author"><div class="sidebar-ov-author__avatar"><img class="sidebar-ov-author__avatar_img" src="/images/icons/stun-logo.svg" alt="avatar"></div><p class="sidebar-ov-author__text">hello world</p></div><div class="sidebar-ov-state"><a class="sidebar-ov-state-item sidebar-ov-state-item--posts" href="/archives/"><div class="sidebar-ov-state-item__count">37</div><div class="sidebar-ov-state-item__name">归档</div></a><a class="sidebar-ov-state-item sidebar-ov-state-item--categories" href="/categories/"><div class="sidebar-ov-state-item__count">7</div><div class="sidebar-ov-state-item__name">分类</div></a><a class="sidebar-ov-state-item sidebar-ov-state-item--tags" href="/tags/"><div class="sidebar-ov-state-item__count">11</div><div class="sidebar-ov-state-item__name">标签</div></a></div><div class="sidebar-ov-cc"><a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en" target="_blank" rel="noopener" data-popover="知识共享许可协议" data-popover-pos="up"><img src="/images/cc-by-nc-sa.svg"></a></div></section></aside></div><div class="clearfix"></div></div></main><footer class="footer" id="footer"><div class="footer-inner"><div><span>Copyright © 2022</span><span class="footer__icon"><i class="fas fa-heart"></i></span><span>牛赞</span></div><div><span>由 <a href="http://hexo.io/" title="Hexo" target="_blank" rel="noopener">Hexo</a> 强力驱动</span><span> v5.4.2</span><span class="footer__devider">|</span><span>主题 - <a href="https://github.com/liuyib/hexo-theme-stun/" title="Stun" target="_blank" rel="noopener">Stun</a></span><span> v2.6.2</span></div><div class="busuanzi"><span class="busuanzi-siteuv"><span class="busuanzi-siteuv__icon"><i class="fas fa-user"></i></span><span class="busuanzi-siteuv__info">访问人数</span><span class="busuanzi-siteuv__value" id="busuanzi_value_site_uv"></span></span><span class="busuanzi-sitepv"><span class="busuanzi-siteuv__icon"><i class="fas fa-eye"></i></span><span class="busuanzi-siteuv__info">浏览总量</span><span class="busuanzi-siteuv__value" id="busuanzi_value_site_pv"></span></span></div></div></footer><div class="loading-bar" id="loading-bar"><div class="loading-bar__progress"></div></div><div class="back2top" id="back2top"><span class="back2top__icon"><i class="fas fa-rocket"></i></span></div></div><script src="https://cdn.jsdelivr.net/npm/jquery@v3.4.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@1.5.2/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@1.5.2/velocity.ui.min.js"></script><script src="https://cdn.jsdelivr.net/gh/sukkaw/busuanzi@latest/bsz.pure.mini.js" async></script><script src="/js/utils.js?v=2.6.2"></script><script src="/js/stun-boot.js?v=2.6.2"></script><script src="/js/scroll.js?v=2.6.2"></script><script src="/js/header.js?v=2.6.2"></script><script src="/js/sidebar.js?v=2.6.2"></script></body></html>
