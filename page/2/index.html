@@ -29,7 +29,53 @@ var CONFIG = {
   sourcePath: {"js":"js","css":"css","images":"images"},
 };
 
-window.CONFIG = CONFIG;</script><meta name="generator" content="Hexo 5.4.2"></head><body><div class="container" id="container"><header class="header" id="header"><div class="header-inner"><nav class="header-nav header-nav--fixed"><div class="header-nav-inner"><div class="header-nav-menubtn"><i class="fas fa-bars"></i></div><div class="header-nav-menu"><div class="header-nav-menu-item"><a class="header-nav-menu-item__link" href="/"><span class="header-nav-menu-item__icon"><i class="fas fa-home"></i></span><span class="header-nav-menu-item__text">首页</span></a></div><div class="header-nav-menu-item"><a class="header-nav-menu-item__link" href="/archives/"><span class="header-nav-menu-item__icon"><i class="fas fa-folder-open"></i></span><span class="header-nav-menu-item__text">归档</span></a></div><div class="header-nav-menu-item"><a class="header-nav-menu-item__link" href="/categories/"><span class="header-nav-menu-item__icon"><i class="fas fa-layer-group"></i></span><span class="header-nav-menu-item__text">分类</span></a></div><div class="header-nav-menu-item"><a class="header-nav-menu-item__link" href="/tags/"><span class="header-nav-menu-item__icon"><i class="fas fa-tags"></i></span><span class="header-nav-menu-item__text">标签</span></a></div></div><div class="header-nav-mode"><div class="mode"><div class="mode-track"><span class="mode-track-moon"></span><span class="mode-track-sun"></span></div><div class="mode-thumb"></div></div></div></div></nav><div class="header-banner"><div class="header-banner-info"><div class="header-banner-info__title">牛赞的博客</div><div class="header-banner-info__subtitle">学无止境</div></div></div></div></header><main class="main" id="main"><div class="main-inner"><div class="content-wrap" id="content-wrap"><div class="content content-home" id="content"><section class="postlist"><article class="postlist-item post"><header class="post-header"><h1 class="post-title"><a class="post-title__link" href="/2022/04/27/webpack%E7%9A%84%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/">webpack的工作原理?</a></h1><div class="post-meta"><span class="post-meta-item post-meta-item--createtime"><span class="post-meta-item__icon"><i class="far fa-calendar-plus"></i></span><span class="post-meta-item__info">发表于</span><span class="post-meta-item__value">2022-04-27</span></span></div></header><div class="post-body"><div class="post-excerpt">
+window.CONFIG = CONFIG;</script><meta name="generator" content="Hexo 5.4.2"></head><body><div class="container" id="container"><header class="header" id="header"><div class="header-inner"><nav class="header-nav header-nav--fixed"><div class="header-nav-inner"><div class="header-nav-menubtn"><i class="fas fa-bars"></i></div><div class="header-nav-menu"><div class="header-nav-menu-item"><a class="header-nav-menu-item__link" href="/"><span class="header-nav-menu-item__icon"><i class="fas fa-home"></i></span><span class="header-nav-menu-item__text">首页</span></a></div><div class="header-nav-menu-item"><a class="header-nav-menu-item__link" href="/archives/"><span class="header-nav-menu-item__icon"><i class="fas fa-folder-open"></i></span><span class="header-nav-menu-item__text">归档</span></a></div><div class="header-nav-menu-item"><a class="header-nav-menu-item__link" href="/categories/"><span class="header-nav-menu-item__icon"><i class="fas fa-layer-group"></i></span><span class="header-nav-menu-item__text">分类</span></a></div><div class="header-nav-menu-item"><a class="header-nav-menu-item__link" href="/tags/"><span class="header-nav-menu-item__icon"><i class="fas fa-tags"></i></span><span class="header-nav-menu-item__text">标签</span></a></div></div><div class="header-nav-mode"><div class="mode"><div class="mode-track"><span class="mode-track-moon"></span><span class="mode-track-sun"></span></div><div class="mode-thumb"></div></div></div></div></nav><div class="header-banner"><div class="header-banner-info"><div class="header-banner-info__title">牛赞的博客</div><div class="header-banner-info__subtitle">学无止境</div></div></div></div></header><main class="main" id="main"><div class="main-inner"><div class="content-wrap" id="content-wrap"><div class="content content-home" id="content"><section class="postlist"><article class="postlist-item post"><header class="post-header"><h1 class="post-title"><a class="post-title__link" href="/2022/04/28/%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BD%BF%E7%94%A8-Virtual-DOM/">为什么使用 Virtual DOM</a></h1><div class="post-meta"><span class="post-meta-item post-meta-item--createtime"><span class="post-meta-item__icon"><i class="far fa-calendar-plus"></i></span><span class="post-meta-item__info">发表于</span><span class="post-meta-item__value">2022-04-28</span></span></div></header><div class="post-body"><div class="post-excerpt"><ul>
+<li>手动操作 <code>DOM</code> 比较麻烦，还需要考虑浏览器兼容性问题，虽然有 <code>jQuery</code> 等库简化 <code>DOM</code> 操作，但是随着项目的复杂 DOM 操作复杂提升</li>
+<li>为了简化 <code>DOM</code> 的复杂操作于是出现了各种 <code>MVVM</code> 框架，<code>MVVM</code> 框架解决了视图和状态的同步问题</li>
+<li>为了简化视图的操作我们可以使用模板引擎，但是模板引擎没有解决跟踪状态变化的问题，于是<code>Virtual DOM</code> 出现了</li>
+<li><code>Virtual DOM</code> 的好处是当状态改变时不需要立即更新 DOM，只需要创建一个虚拟树来描述<code>DOM</code>，<code>Virtual DOM</code> 内部将弄清楚如何有效(<code>diff</code>)的更新 <code>DOM</code></li>
+<li>虚拟 <code>DOM</code> 可以维护程序的状态，跟踪上一次的状态</li>
+<li>通过比较前后两次状态的差异更新真实 <code>DOM</code></li>
+</ul>
+<p><strong>虚拟 DOM 的作用</strong></p>
+<ul>
+<li><p>维护视图和状态的关系</p>
+</li>
+<li><p>复杂视图情况下提升渲染性能</p>
+</li>
+<li><p>除了渲染 <code>DOM</code> 以外，还可以实现 <code>SSR(Nuxt.js/Next.js)</code>、原生应用(<code>Weex/React Native</code>)、小程序(<code>mpvue/uni-app</code>)等</p>
+<p><img src="/2022/04/28/%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BD%BF%E7%94%A8-Virtual-DOM/001.png"></p>
+</li>
+</ul>
+<p><strong>VDOM 的必要性？</strong></p>
+<ul>
+<li><strong>创建真实DOM的代价高</strong>：真实的 <code>DOM</code> 节点 <code>node</code> 实现的属性很多，而 <code>vnode</code> 仅仅实现一些必要的属性，相比起来，创建一个 <code>vnode</code> 的成本比较低。</li>
+<li><strong>触发多次浏览器重绘及回流</strong>：使用 <code>vnode</code> ，相当于加了一个缓冲，让一次数据变动所带来的所有 <code>node</code> 变化，先在 <code>vnode</code> 中进行修改，然后 <code>diff</code> 之后对所有产生差异的节点集中一次对 <code>DOM tree</code> 进行修改，以减少浏览器的重绘及回流。</li>
+</ul>
+<p><strong>补充：vue 为什么采用 vdom？</strong></p>
+<blockquote>
+<p>引入 <code>Virtual DOM</code> 在性能方面的考量仅仅是一方面。</p>
+</blockquote>
+<ul>
+<li>性能受场景的影响是非常大的，不同的场景可能造成不同实现方案之间成倍的性能差距，所以依赖细粒度绑定及 <code>Virtual DOM</code> 哪个的性能更好还真不是一个容易下定论的问题。</li>
+<li><code>Vue</code> 之所以引入了 <code>Virtual DOM</code>，更重要的原因是为了解耦 <code>HTML</code>依赖，这带来两个非常重要的好处是：</li>
+</ul>
+<blockquote>
+<ul>
+<li>不再依赖 <code>HTML</code> 解析器进行模版解析，可以进行更多的 <code>AOT</code> 工作提高运行时效率：通过模版 <code>AOT</code> 编译，<code>Vue</code> 的运行时体积可以进一步压缩，运行时效率可以进一步提升；</li>
+<li>可以渲染到 <code>DOM</code> 以外的平台，实现 <code>SSR</code>、同构渲染这些高级特性，<code>Weex</code>等框架应用的就是这一特性。</li>
+</ul>
+</blockquote>
+<blockquote>
+<p>综上，<code>Virtual DOM</code> 在性能上的收益并不是最主要的，更重要的是它使得 <code>Vue</code> 具备了现代框架应有的高级特性。</p>
+</blockquote>
+</div></div></article><article class="postlist-item post"><header class="post-header"><h1 class="post-title"><a class="post-title__link" href="/2022/04/28/Vue2-%E5%93%8D%E5%BA%94%E5%BC%8F%E5%8E%9F%E7%90%86/">Vue2 响应式原理</a></h1><div class="post-meta"><span class="post-meta-item post-meta-item--createtime"><span class="post-meta-item__icon"><i class="far fa-calendar-plus"></i></span><span class="post-meta-item__info">发表于</span><span class="post-meta-item__value">2022-04-28</span></span></div></header><div class="post-body"><div class="post-excerpt"><p>Vue 的响应式原理的核心是通过 ES5 的保护对象的 <code>Object.defindeProperty</code> 中的访问器属性中的 get 和 set 方法，data 中声明的属性都被添加了访问器属性，当读取 data 中的数据时自动调用 get 方法，当修改 data 中的数据时，自动调用 set 方法，检测到数据的变化，会通知观察者 Wacher，观察者 Wacher自动触发重新render 当前组件（子组件不会重新渲染）,生成新的虚拟 DOM 树，Vue 框架会遍历并对比新虚拟 DOM 树和旧虚拟 DOM 树中每个节点的差别，并记录下来，最后，加载操作，将所有记录的不同点，局部修改到真实 DOM树上。<img src="/2022/04/28/Vue2-%E5%93%8D%E5%BA%94%E5%BC%8F%E5%8E%9F%E7%90%86/001.png"></p>
+</div></div></article><article class="postlist-item post"><header class="post-header"><h1 class="post-title"><a class="post-title__link" href="/2022/04/27/Webpack-Proxy%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/">Webpack Proxy工作原理</a></h1><div class="post-meta"><span class="post-meta-item post-meta-item--createtime"><span class="post-meta-item__icon"><i class="far fa-calendar-plus"></i></span><span class="post-meta-item__info">发表于</span><span class="post-meta-item__value">2022-04-27</span></span></div></header><div class="post-body"><div class="post-excerpt"><p>  webpack中的<code>proxy</code>只是一层代理，用于把指定的<code>path</code>，代理去后端提供的地址，背后使用node来做server。可能有人疑惑，为什么只适用本地开发？因为该技术只是在webpack打包阶段在本地临时生成了node server，来实现类似nginx 的<code>proxy_pass</code>的反向代理效果</p>
+<p>  <code>proxy</code>工作原理实质上是利用<code>http-proxy-middleware</code> 这个http代理中间件，实现请求转发给其他服务器。例如：本地主机A为<code>http://localhost:3000</code>，该主机浏览器发送一个请求，接口为<code>/api</code>，这个请求的数据（响应）在另外一台服务器B<code>http://10.231.133.22:80</code>上，这时，就可以通过A主机设置webpack proxy，直接将请求发送给B主机。</p>
+<figure class="highlight ruby"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">var express = <span class="keyword">require</span>(<span class="string">&#x27;express&#x27;</span>);</span><br><span class="line">var proxy = <span class="keyword">require</span>(<span class="string">&#x27;http-proxy-middleware&#x27;</span>);</span><br><span class="line"></span><br><span class="line">var app = express();</span><br><span class="line"></span><br><span class="line">app.use(<span class="string">&#x27;/api&#x27;</span>, proxy(&#123;<span class="symbol">target:</span> <span class="string">&#x27;http://www.example.org&#x27;</span>, <span class="symbol">changeOrigin:</span> <span class="literal">true</span>&#125;));</span><br><span class="line">app.listen(<span class="number">3000</span>);</span><br><span class="line"></span><br><span class="line"><span class="regexp">//</span> <span class="symbol">http:</span>/<span class="regexp">/localhost:3000/api</span><span class="regexp">/foo/bar</span> -&gt; <span class="symbol">http:</span>/<span class="regexp">/www.example.org/api</span><span class="regexp">/foo/bar</span></span><br></pre></td></tr></table></div></figure>
+
+<p>  必须配置**<code>changeOrigin= true</code>**</p>
+</div></div></article><article class="postlist-item post"><header class="post-header"><h1 class="post-title"><a class="post-title__link" href="/2022/04/27/webpack%E7%9A%84%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/">webpack的工作原理?</a></h1><div class="post-meta"><span class="post-meta-item post-meta-item--createtime"><span class="post-meta-item__icon"><i class="far fa-calendar-plus"></i></span><span class="post-meta-item__info">发表于</span><span class="post-meta-item__value">2022-04-27</span></span></div></header><div class="post-body"><div class="post-excerpt">
         <h6 id="基本概念">
           <a href="#基本概念" class="heading-link"><i class="fas fa-link"></i></a><a href="#基本概念" class="headerlink" title="基本概念"></a><strong>基本概念</strong></h6>
       <p>在了解webpack原理前，需要掌握以下几个核心概念，以方便后面的理解：</p>
@@ -229,110 +275,4 @@ window.CONFIG = CONFIG;</script><meta name="generator" content="Hexo 5.4.2"></he
 <p><img src="/2022/04/26/Django-%E8%B0%83%E7%94%A8%E6%8A%A5%E9%94%99-ImportError-Couldn-not-import-Django/004.png" alt="img"></p>
 <p>事后查阅了很多的资料以及其他人的分享。关于貌似是因为mysql数据库的版本问题导致。在Python3.6以上的版本会出现这种问题，大概吧。关于这个现象我只找到了一位和我有相同经历的博文。他的解决方法也是一样去掉了逗号，</p>
 <p>总结：这是一个神奇的逗号。</p>
-</div></div></article><article class="postlist-item post"><header class="post-header"><h1 class="post-title"><a class="post-title__link" href="/2021/04/28/Vue3-%E5%93%8D%E5%BA%94%E5%BC%8F%E5%8E%9F%E7%90%86/">Vue3 响应式原理</a></h1><div class="post-meta"><span class="post-meta-item post-meta-item--createtime"><span class="post-meta-item__icon"><i class="far fa-calendar-plus"></i></span><span class="post-meta-item__info">发表于</span><span class="post-meta-item__value">2021-04-28</span></span></div></header><div class="post-body"><div class="post-excerpt">
-        <h2 id="什么是-Proxy">
-          <a href="#什么是-Proxy" class="heading-link"><i class="fas fa-link"></i></a><a href="#什么是-Proxy" class="headerlink" title="什么是 Proxy?"></a>什么是 Proxy?</h2>
-      <p><code>ES6</code> 中我们看到了一个让人耳目一新的属性——<code>Proxy</code>。我们先看一下概念：</p>
-<blockquote>
-<p>“</p>
-<p>通过调用 <code>new Proxy()</code> ，你可以创建一个代理用来替代另一个对象(被称为目标)，这个代理对目标对象进行了虚拟，因此该代理与该目标对象表面上可以被当作同一个对象来对待。代理允许你拦截在目标对象上的底层操作，而这原本是 <code>JS</code> 引擎的内部能力。</p>
-</blockquote>
-<p><code>Proxy</code> 顾名思义，就是代理的意思，这是一个能让我们随意操控对象的特性。当我们通过 <code>Proxy</code> 去对一个对象进行代理之后，我们将得到一个和被代理对象几乎完全一样的对象，并且可以对这个对象进行完全的监控。</p>
-<p>什么叫完全监控？<code>Proxy</code> 所带来的，是对底层操作的拦截。前面我们在实现对对象监听时使用了 <code>Object.defineProperty</code>，这个其实是 <code>JS</code> 提供给我们的高级操作，也就是通过底层封装之后暴露出来的方法。<code>Proxy</code> 的强大之处在于，我们可以直接拦截对代理对象的底层操作。这样我们相当于从一个对象的底层操作开始实现对它的监听。</p>
-<p>那么<code>Proxy</code>相比<code>Object.defineProperty</code>都有哪些优势呢？</p>
-
-        <h2 id="Proxy-的优势">
-          <a href="#Proxy-的优势" class="heading-link"><i class="fas fa-link"></i></a><a href="#Proxy-的优势" class="headerlink" title="Proxy 的优势"></a>Proxy 的优势</h2>
-      <ul>
-<li><code>Proxy</code> 可以直接监听对象而非属性；</li>
-<li><code>Proxy</code> 可以直接监听数组的变化；</li>
-<li><code>Proxy</code> 有多达 13 种拦截方法,不限于 <code>apply</code>、<code>ownKeys</code>、<code>deleteProperty</code>、<code>has</code> 等等是 <code>Object.defineProperty</code> 不具备的；</li>
-<li><code>Proxy</code> 返回的是一个新对象,我们可以只操作新的对象达到目的,而 <code>Object.defineProperty</code> 只能遍历对象属性直接修改；</li>
-<li><code>Proxy</code> 作为新标准将受到浏览器厂商重点持续的性能优化，也就是传说中的新标准的性能红利。</li>
-</ul>
-<p>对<code>Proxy</code>有了大致的了解后，下面我就来分析一下<code>Vue3</code>的响应式原理</p>
-
-        <h2 id="Vue3响应式原理">
-          <a href="#Vue3响应式原理" class="heading-link"><i class="fas fa-link"></i></a><a href="#Vue3响应式原理" class="headerlink" title="Vue3响应式原理"></a>Vue3响应式原理</h2>
-      <p>这里放一张我之前整理的关于<code>Vue3</code>响应式的流程图：</p>
-<p><img src="/2021/04/28/Vue3-%E5%93%8D%E5%BA%94%E5%BC%8F%E5%8E%9F%E7%90%86/001.jpg"></p>
-<p>我们来梳理一下流程：</p>
-<p>1、通过<code>state = reactive(target)</code>来定义响应式数据（这里基于<code>Proxy</code>实现）</p>
-<p>2、通过 <code>effect</code>声明依赖响应式数据的函数<code>cb</code> ( 例如视图渲染函数<code>render</code>函数)，并执行<code>cb</code>函数，执行过程中，会触发响应式数据 <code>getter</code></p>
-<p>3、在响应式数据 <code>getter</code>中进行 <code>track</code>依赖收集：存储响应式数据与更新函数 cb 的映射关系，存储于<code>targetMap</code></p>
-<p>4、当变更响应式数据时，触发<code>trigger</code>，根据<code>targetMap</code>找到关联的<code>cb</code>并执行</p>
-<blockquote>
-<figure class="highlight javascript"><div class="table-container"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">targetMap<span class="string">`的结构为：`</span>&#123;<span class="attr">target</span>: &#123;<span class="attr">key</span>: [fn1,fn2]&#125;&#125;</span><br></pre></td></tr></table></div></figure>
-</blockquote>
-</div></div></article><article class="postlist-item post"><header class="post-header"><h1 class="post-title"><a class="post-title__link" href="/2020/11/13/vue3%E5%B8%A6%E6%9D%A5%E7%9A%84%E6%96%B0%E7%89%B9%E6%80%A7-%E4%BA%AE%E7%82%B9/">vue3带来的新特性/亮点</a></h1><div class="post-meta"><span class="post-meta-item post-meta-item--createtime"><span class="post-meta-item__icon"><i class="far fa-calendar-plus"></i></span><span class="post-meta-item__info">发表于</span><span class="post-meta-item__value">2020-11-13</span></span></div></header><div class="post-body"><div class="post-excerpt"><p><strong>1. 压缩包体积更小</strong></p>
-<blockquote>
-<p>当前最小化并被压缩的 Vue 运行时大小约为 20kB（2.6.10 版为 22.8kB）。Vue 3.0捆绑包的大小大约会减少一半，即只有10kB！</p>
-</blockquote>
-<p><strong>2. Object.defineProperty -&gt; Proxy</strong></p>
-<ul>
-<li><code>Object.defineProperty</code>是一个相对比较昂贵的操作，因为它直接操作对象的属性，颗粒度比较小。将它替换为es6的<code>Proxy</code>，在目标对象之上架了一层拦截，代理的是对象而不是对象的属性。这样可以将原本对对象属性的操作变为对整个对象的操作，颗粒度变大。</li>
-<li>javascript引擎在解析的时候希望对象的结构越稳定越好，如果对象一直在变，可优化性降低，proxy不需要对原始对象做太多操作。</li>
-</ul>
-<p><strong>3. Virtual DOM 重构</strong></p>
-<blockquote>
-<p>vdom的本质是一个抽象层，用javascript描述界面渲染成什么样子。react用jsx，没办法检测出可以优化的动态代码，所以做时间分片，vue中足够快的话可以不用时间分片</p>
-</blockquote>
-<ul>
-<li><strong>传统vdom的性能瓶颈：</strong><ul>
-<li>虽然 Vue 能够保证触发更新的组件最小化，但在单个组件内部依然需要遍历该组件的整个 vdom 树。</li>
-<li>传统 vdom 的性能跟模版大小正相关，跟动态节点的数量无关。在一些组件整个模版内只有少量动态节点的情况下，这些遍历都是性能的浪费。</li>
-<li>JSX 和手写的 render function 是完全动态的，过度的灵活性导致运行时可以用于优化的信息不足</li>
-</ul>
-</li>
-<li><strong>那为什么不直接抛弃vdom呢？</strong><ul>
-<li>高级场景下手写 <code>render function</code> 获得更强的表达力</li>
-<li>生成的代码更简洁</li>
-<li>兼容2.x</li>
-</ul>
-</li>
-</ul>
-<blockquote>
-<p>vue的特点是底层为Virtual DOM，上层包含有大量静态信息的模版。为了兼容手写 render function，最大化利用模版静态信息，<code>vue3.0采用了动静结合的解决方案</code>，将vdom的操作颗粒度变小，每次触发更新不再以组件为单位进行遍历，主要更改如下</p>
-</blockquote>
-<ul>
-<li>将模版基于动态节点指令切割为嵌套的区块</li>
-<li>每个区块内部的节点结构是固定的</li>
-<li>每个区块只需要以一个 <code>Array</code> 追踪自身包含的动态节点</li>
-</ul>
-<blockquote>
-<p>vue3.0将 vdom 更新性能由与模版整体大小相关提升为与动态内容的数量相关</p>
-</blockquote>
-<p><strong>Vue 3.0 动静结合的 Dom diff</strong></p>
-<blockquote>
-<ul>
-<li>Vue3.0 提出动静结合的 DOM diff 思想，动静结合的 DOM diff其实是在预编译阶段进行了优化。之所以能够做到预编译优化，是因为 Vue core 可以静态分析 template，在解析模版时，整个 parse 的过程是利用正则表达式顺序解析模板，当解析到开始标签、闭合标签和文本的时候都会分别执行对应的回调函数，来达到构造 AST 树的目的。</li>
-<li>借助预编译过程，Vue 可以做到的预编译优化就很强大了。比如在预编译时标记出模版中可能变化的组件节点，再次进行渲染前 diff 时就可以跳过“永远不会变化的节点”，而只需要对比“可能会变化的动态节点”。这也就是动静结合的 DOM diff 将 diff 成本与模版大小正相关优化到与动态节点正相关的理论依据。</li>
-</ul>
-</blockquote>
-<p><strong>4. Performance</strong></p>
-<blockquote>
-<p>vue3在性能方面比vue2快了2倍。</p>
-</blockquote>
-<ul>
-<li>重写了虚拟DOM的实现</li>
-<li>运行时编译</li>
-<li>update性能提高</li>
-<li>SSR速度提高</li>
-</ul>
-<p><strong>5. Tree-shaking support</strong></p>
-<blockquote>
-<p>vue3中的核心api都支持了tree-shaking，这些api都是通过包引入的方式而不是直接在实例化时就注入，只会对使用到的功能或特性进行打包（按需打包），这意味着更多的功能和更小的体积。</p>
-</blockquote>
-</div></div></article><article class="postlist-item post"><header class="post-header"><h1 class="post-title"><a class="post-title__link" href="/2020/07/15/js%E4%BD%9C%E7%94%A8%E5%9F%9F%E7%9A%84%E7%90%86%E8%A7%A3/">js作用域的理解</a></h1><div class="post-meta"><span class="post-meta-item post-meta-item--createtime"><span class="post-meta-item__icon"><i class="far fa-calendar-plus"></i></span><span class="post-meta-item__info">发表于</span><span class="post-meta-item__value">2020-07-15</span></span></div></header><div class="post-body"><div class="post-excerpt"><p><strong>1. 全局作用域</strong></p>
-<blockquote>
-<p>全局变量是挂载在 window 对象下的变量，所以在网页中的任何位置你都可以使用并且访问到这个全局变量</p>
-</blockquote>
-<p><strong>2. 函数作用域</strong></p>
-<blockquote>
-<p>函数中定义的变量叫作函数变量，这个时候只能在函数内部才能访问到它，所以它的作用域也就是函数的内部，称为函数作用域</p>
-</blockquote>
-<p><strong>3. 块级作用域</strong></p>
-<blockquote>
-<p>ES6 中新增了块级作用域，最直接的表现就是新增的 let 关键词，使用 let 关键词定义的变量只能在块级作用域中被访问，有“暂时性死区”的特点，也就是说这个变量在定义之前是不能被使用的。</p>
-</blockquote>
-</div></div></article></section><nav class="paginator"><div class="paginator-inner"><a class="extend prev" rel="prev" href="/"><i class="fas fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/3/"><i class="fas fa-angle-right"></i></a></div></nav></div></div><div class="sidebar-wrap" id="sidebar-wrap"><aside class="sidebar" id="sidebar"><section class="sidebar-toc hide"></section><!-- ov = overview--><section class="sidebar-ov"><div class="sidebar-ov-author"><div class="sidebar-ov-author__avatar"><img class="sidebar-ov-author__avatar_img" src="/images/icons/stun-logo.svg" alt="avatar"></div><p class="sidebar-ov-author__text">hello world</p></div><div class="sidebar-ov-state"><a class="sidebar-ov-state-item sidebar-ov-state-item--posts" href="/archives/"><div class="sidebar-ov-state-item__count">37</div><div class="sidebar-ov-state-item__name">归档</div></a><a class="sidebar-ov-state-item sidebar-ov-state-item--categories" href="/categories/"><div class="sidebar-ov-state-item__count">7</div><div class="sidebar-ov-state-item__name">分类</div></a><a class="sidebar-ov-state-item sidebar-ov-state-item--tags" href="/tags/"><div class="sidebar-ov-state-item__count">11</div><div class="sidebar-ov-state-item__name">标签</div></a></div><div class="sidebar-ov-cc"><a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en" target="_blank" rel="noopener" data-popover="知识共享许可协议" data-popover-pos="up"><img src="/images/cc-by-nc-sa.svg"></a></div></section></aside></div><div class="clearfix"></div></div></main><footer class="footer" id="footer"><div class="footer-inner"><div><span>Copyright © 2022</span><span class="footer__icon"><i class="fas fa-heart"></i></span><span>牛赞</span></div><div><span>由 <a href="http://hexo.io/" title="Hexo" target="_blank" rel="noopener">Hexo</a> 强力驱动</span><span> v5.4.2</span><span class="footer__devider">|</span><span>主题 - <a href="https://github.com/liuyib/hexo-theme-stun/" title="Stun" target="_blank" rel="noopener">Stun</a></span><span> v2.6.2</span></div><div class="busuanzi"><span class="busuanzi-siteuv"><span class="busuanzi-siteuv__icon"><i class="fas fa-user"></i></span><span class="busuanzi-siteuv__info">访问人数</span><span class="busuanzi-siteuv__value" id="busuanzi_value_site_uv"></span></span><span class="busuanzi-sitepv"><span class="busuanzi-siteuv__icon"><i class="fas fa-eye"></i></span><span class="busuanzi-siteuv__info">浏览总量</span><span class="busuanzi-siteuv__value" id="busuanzi_value_site_pv"></span></span></div></div></footer><div class="loading-bar" id="loading-bar"><div class="loading-bar__progress"></div></div><div class="back2top" id="back2top"><span class="back2top__icon"><i class="fas fa-rocket"></i></span></div></div><script src="https://cdn.jsdelivr.net/npm/jquery@v3.4.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@1.5.2/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@1.5.2/velocity.ui.min.js"></script><script src="https://cdn.jsdelivr.net/gh/sukkaw/busuanzi@latest/bsz.pure.mini.js" async></script><script src="/js/utils.js?v=2.6.2"></script><script src="/js/stun-boot.js?v=2.6.2"></script><script src="/js/scroll.js?v=2.6.2"></script><script src="/js/header.js?v=2.6.2"></script><script src="/js/sidebar.js?v=2.6.2"></script></body></html>
+</div></div></article></section><nav class="paginator"><div class="paginator-inner"><a class="extend prev" rel="prev" href="/"><i class="fas fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/3/"><i class="fas fa-angle-right"></i></a></div></nav></div></div><div class="sidebar-wrap" id="sidebar-wrap"><aside class="sidebar" id="sidebar"><section class="sidebar-toc hide"></section><!-- ov = overview--><section class="sidebar-ov"><div class="sidebar-ov-author"><div class="sidebar-ov-author__avatar"><img class="sidebar-ov-author__avatar_img" src="/images/icons/stun-logo.svg" alt="avatar"></div><p class="sidebar-ov-author__text">hello world</p></div><div class="sidebar-ov-state"><a class="sidebar-ov-state-item sidebar-ov-state-item--posts" href="/archives/"><div class="sidebar-ov-state-item__count">40</div><div class="sidebar-ov-state-item__name">归档</div></a><a class="sidebar-ov-state-item sidebar-ov-state-item--categories" href="/categories/"><div class="sidebar-ov-state-item__count">7</div><div class="sidebar-ov-state-item__name">分类</div></a><a class="sidebar-ov-state-item sidebar-ov-state-item--tags" href="/tags/"><div class="sidebar-ov-state-item__count">12</div><div class="sidebar-ov-state-item__name">标签</div></a></div><div class="sidebar-ov-cc"><a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en" target="_blank" rel="noopener" data-popover="知识共享许可协议" data-popover-pos="up"><img src="/images/cc-by-nc-sa.svg"></a></div></section></aside></div><div class="clearfix"></div></div></main><footer class="footer" id="footer"><div class="footer-inner"><div><span>Copyright © 2022</span><span class="footer__icon"><i class="fas fa-heart"></i></span><span>牛赞</span></div><div><span>由 <a href="http://hexo.io/" title="Hexo" target="_blank" rel="noopener">Hexo</a> 强力驱动</span><span> v5.4.2</span><span class="footer__devider">|</span><span>主题 - <a href="https://github.com/liuyib/hexo-theme-stun/" title="Stun" target="_blank" rel="noopener">Stun</a></span><span> v2.6.2</span></div><div class="busuanzi"><span class="busuanzi-siteuv"><span class="busuanzi-siteuv__icon"><i class="fas fa-user"></i></span><span class="busuanzi-siteuv__info">访问人数</span><span class="busuanzi-siteuv__value" id="busuanzi_value_site_uv"></span></span><span class="busuanzi-sitepv"><span class="busuanzi-siteuv__icon"><i class="fas fa-eye"></i></span><span class="busuanzi-siteuv__info">浏览总量</span><span class="busuanzi-siteuv__value" id="busuanzi_value_site_pv"></span></span></div></div></footer><div class="loading-bar" id="loading-bar"><div class="loading-bar__progress"></div></div><div class="back2top" id="back2top"><span class="back2top__icon"><i class="fas fa-rocket"></i></span></div></div><script src="https://cdn.jsdelivr.net/npm/jquery@v3.4.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@1.5.2/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@1.5.2/velocity.ui.min.js"></script><script src="https://cdn.jsdelivr.net/gh/sukkaw/busuanzi@latest/bsz.pure.mini.js" async></script><script src="/js/utils.js?v=2.6.2"></script><script src="/js/stun-boot.js?v=2.6.2"></script><script src="/js/scroll.js?v=2.6.2"></script><script src="/js/header.js?v=2.6.2"></script><script src="/js/sidebar.js?v=2.6.2"></script></body></html>
